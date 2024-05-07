@@ -163,8 +163,10 @@ public abstract class AnnotationConfigUtils {
 			}
 		}
 
+		// 用于存储这些后置处理器的BeanDefinition
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
+		// 将后置处理器封装为BeanDefinition，并存放在beanDefs集合中
 		// 注册ConfigurationClassPostProcessor类型的BeanDefinition
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
