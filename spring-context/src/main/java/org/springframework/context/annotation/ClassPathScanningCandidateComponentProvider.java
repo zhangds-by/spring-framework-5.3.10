@@ -209,6 +209,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		ClassLoader cl = ClassPathScanningCandidateComponentProvider.class.getClassLoader();
 
 		try {
+			// 注册@ManagedBean注解扫描，需要设置JSR-250 jar包
 			this.includeFilters.add(new AnnotationTypeFilter(
 					((Class<? extends Annotation>) ClassUtils.forName("javax.annotation.ManagedBean", cl)), false));
 			logger.trace("JSR-250 'javax.annotation.ManagedBean' found and supported for component scanning");
@@ -218,6 +219,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		}
 
 		try {
+			// 注册@Named注解扫描，需要设置JSR-330 jar包
 			this.includeFilters.add(new AnnotationTypeFilter(
 					((Class<? extends Annotation>) ClassUtils.forName("javax.inject.Named", cl)), false));
 			logger.trace("JSR-330 'javax.inject.Named' annotation found and supported for component scanning");
@@ -424,6 +426,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
 
+			// 将路径下的class转为Resource
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
 
 			boolean traceEnabled = logger.isTraceEnabled();
@@ -434,8 +437,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				}
 				if (resource.isReadable()) {
 					try {
+						// 获得resource的元数据metadata
 						MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
-						// excludeFilters、includeFilters判断
+						// excludeFilters、includeFilters判断BeanDefinition是否符合条件
 						if (isCandidateComponent(metadataReader)) { // @Component-->includeFilters判断
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 							sbd.setSource(resource);
