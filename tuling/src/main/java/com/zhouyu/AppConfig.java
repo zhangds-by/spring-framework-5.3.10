@@ -1,7 +1,9 @@
 package com.zhouyu;
 
 import com.zhouyu.service.OrderService;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -54,6 +56,14 @@ public class AppConfig {
 //	public SqlSessionTemplate sqlSession() throws Exception {
 //		return new SqlSessionTemplate(sqlSessionFactory());
 //	}
+
+	// 国际化
+	@Bean
+	public MessageSource messageSource() {
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		messageSource.setBasename("messages");
+		return messageSource;
+	}
 
 }
 
