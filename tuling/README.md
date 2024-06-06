@@ -18,7 +18,7 @@ AnnotationConfigApplicationContext
 ## Bean的声明周期
 
 ```markdown
-1、doScan：扫描并生成BeanDefinition
+1、doScan：扫描并生成BeanDefinition (doScan -> findCandidateComponents -> scanCandidateComponents)
     - 扫描classpath 的.class封装为Resource
     - 获取Resource 的MetadataReader
         - MetadataReader（类的元数据读取器）
@@ -26,6 +26,12 @@ AnnotationConfigApplicationContext
     - 根据MetadataReader 进行excludeFilters和includeFilters、@Conditional筛选
     - 判断是否是对应的类、非接口和抽象类
     - 扫描到的是一个bean，加入到 beanDefinitionMap 结果集
+2、getBean
+    - 合并BD，获取RBD
+    - createBean：创建bean对象
+        - resolveBeanClass 加载类
+        - 实例化前
+                调试："userService".equals(beanName)
 
 ```
 

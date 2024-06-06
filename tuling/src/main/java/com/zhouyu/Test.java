@@ -33,6 +33,11 @@ public class Test {
 		// 创建一个Spring容器
 		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 
+		// 手动调用了scan方法和refresh方法。通常情况下，如果你在配置类上使用@ComponentScan，Spring会自动处理这些调用。
+		// spring 启动时注册了实现了scan方法的 ClassPathBeanDefinitionScanner
+//		applicationContext.scan("com.zhouyu");
+//		applicationContext.refresh();
+
 		UserService userService = (UserService) applicationContext.getBean("userService");
 		userService.test();
 

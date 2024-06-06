@@ -310,6 +310,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				if (requiredType != null) {
 					beanCreation.tag("beanType", requiredType::toString);
 				}
+				// 获取MBD，若不存在会进行合并BD
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 
 				// 检查BeanDefinition是不是Abstract的
@@ -1549,17 +1550,18 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			throws CannotLoadBeanClassException {
 
 		try {
-			// 如果beanClass被加载了
+			// 如果beanClass属性的类型是Class，说明beanClass被加载了，直接返回
 			if (mbd.hasBeanClass()) {
 				return mbd.getBeanClass();
 			}
 
-			// 如果beanClass没有被加载
+
 			if (System.getSecurityManager() != null) {
 				return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>)
 						() -> doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
 			}
 			else {
+				// 如果beanClass没有被加载，根据类名进行加载
 				return doResolveBeanClass(mbd, typesToMatch);
 			}
 		}
@@ -1579,6 +1581,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>... typesToMatch)
 			throws ClassNotFoundException {
 
+		// 默认beanClassLoader是通过ClassUtils.getDefaultClassLoader()赋值
 		ClassLoader beanClassLoader = getBeanClassLoader();
 		ClassLoader dynamicLoader = beanClassLoader;
 		boolean freshResolve = false;
@@ -1586,6 +1589,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		if (!ObjectUtils.isEmpty(typesToMatch)) {
 			// When just doing type checks (i.e. not creating an actual instance yet),
 			// use the specified temporary class loader (e.g. in a weaving scenario).
+//			使用BF设置的类加载器来加载类
 			ClassLoader tempClassLoader = getTempClassLoader();
 			if (tempClassLoader != null) {
 				dynamicLoader = tempClassLoader;
